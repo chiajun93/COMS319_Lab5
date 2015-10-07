@@ -10,7 +10,9 @@ var Calc = {
   Model : {
     memory : 0,
     op: "",
-    display : 1
+    display : 1,
+    substr: "",
+    isEval: 0
   },
 
 
@@ -40,58 +42,85 @@ var Calc = {
 
   Controller : {
     buttonsHandler : function(currVal) {
-        
-        if(currVal == "M+"){
-          if(textRow.value != ""){
-            Calc.Model.memory = eval(Calc.Model.memory + "+" + textRow.value);
-          }
 
-          Calc.Model.display = 0;
+      Calc.Model.isEval = 0;
+
+      if(currVal == "M+"){
+        if(textRow.value != ""){
+          Calc.Model.memory = eval(Calc.Model.memory + "+" + textRow.value);
         }
 
-        else if(currVal == "M-"){
-          if(textRow.value != ""){
-            Calc.Model.memory = eval(Calc.Model.memory + "-" + textRow.value);
-          }
+        Calc.Model.display = 0;
+      }
 
-          Calc.Model.display = 0;
+      else if(currVal == "M-"){
+        if(textRow.value != ""){
+          Calc.Model.memory = eval(Calc.Model.memory + "-(" + textRow.value +")");
         }
 
-        else if(currVal == "MR"){
-          textRow.value = Calc.Model.memory;
-          console.log(Calc.Model.memory);
-          Calc.Model.display = 0;
+        Calc.Model.display = 0;
+      }
+
+      else if(currVal == "MR"){
+        textRow.value = Calc.Model.memory;
+        console.log(Calc.Model.memory);
+        Calc.Model.display = 0;
+      }
+
+      else if(currVal == "C"){
+        textRow.value = "";
+        Calc.Model.display = 0;
+      }
+
+      else if(currVal == "."){
+        if(textRow.value.indexOf(".") == -1){
+          textRow.value += currVal;
+        }
+        Calc.Model.display = 0;
+      }
+
+      else{
+        if(currVal == "+"){
+          Calc.Model.op = "+";
+        }
+        else if(currVal == "-"){
+          Calc.Model.op = "-";
+        }
+        else if(currVal == "*"){
+          Calc.Model.op = "*";
+        }
+        else if(currVal == "/"){
+          Calc.Model.op = "/";
+        }
+        Calc.Model.display = 1;
+      }
+
+      if(Calc.Model.display == 1)
+      {
+        if(textRow.value == 0){
+          textRow.value = currVal;
         }
 
-        else if(currVal == "C"){
-          textRow.value = "";
-          Calc.Model.display = 0;
-        }
-
-        else if(currVal == "."){
-          if(textRow.value.indexOf(".") == -1){
-            textRow.value += currVal;
-          }
-          Calc.Model.display = 0;
-        }
-
-        else{
-          Calc.Model.display = 1;
-        }
-
-        if(Calc.Model.display == 1)
+        else
         {
           textRow.value += currVal;
         }
+      }
 
     },
 
     eval: function(){
+      if(Calc.Model.isEval == "1")
+      {
+        textRow.value = eval(textRow.value + Calc.Model.substr);
+      }
 
-      var sum = eval(textRow.value);
-      textRow.value = sum;
-      Calc.Model.total = sum;
-      console.log(Calc.Model.total);
+      else
+      {
+        Calc.Model.substr = textRow.value.substr(textRow.value.lastIndexOf(Calc.Model.op),textRow.value.length);
+        textRow.value = eval(textRow.value);
+        Calc.Model.isEval = 1;
+      }
     }
   },
 
@@ -122,16 +151,16 @@ display : function() {
   s += "<td>" + Calc.displayElement(Calc.View.button8) + "</td>";
   s += "<td>" +Calc.displayElement(Calc.View.button9) + "</td>";
   s += "<td>" + Calc.displayElement(Calc.View.buttonPlus) + "</td>";
-   s += "</tr>";
-   
-   s += "<tr>";
+  s += "</tr>";
+
+  s += "<tr>";
   s += "<td>" + Calc.displayElement(Calc.View.button4) + "</td>";
   s += "<td>" + Calc.displayElement(Calc.View.button5) + "</td>";
   s += "<td>" + Calc.displayElement(Calc.View.button6) + "</td>";
   s += "<td>" + Calc.displayElement(Calc.View.buttonMinus) + "</td>";
-   s += "</tr>";
+  s += "</tr>";
 
-   s += "<tr>";
+  s += "<tr>";
   s += "<td>" + Calc.displayElement(Calc.View.button1) + "</td>";
   s += "<td>" + Calc.displayElement(Calc.View.button2) + "</td>";
   s += "<td>" + Calc.displayElement(Calc.View.button3) + "</td>";
