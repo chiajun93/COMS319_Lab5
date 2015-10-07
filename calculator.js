@@ -189,7 +189,7 @@ var Calc = {
 
   display : function() {
     var s;
-    s = "<table id=\"myTable\" border=0>";
+    s = "<table id=\"myTable\">";
     s += "<tr>" + Calc.displayElement(Calc.View.textRow) + "</tr>";
     s += "<tr>";
     s += "<td>" + Calc.displayElement(Calc.View.button7) + "</td>";
