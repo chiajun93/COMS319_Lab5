@@ -47,7 +47,7 @@ var Calc = {
 
       if(currVal == "M+"){
         if(textRow.value != ""){
-          Calc.Model.memory = eval(Calc.Model.memory + "+" + textRow.value);
+          Calc.Model.memory = eval(Calc.Model.memory + "+(" + textRow.value + ")");
         }
 
         Calc.Model.display = 0;
@@ -63,7 +63,6 @@ var Calc = {
 
       else if(currVal == "MR"){
         textRow.value = Calc.Model.memory;
-        console.log(Calc.Model.memory);
         Calc.Model.display = 0;
       }
 
@@ -117,9 +116,12 @@ var Calc = {
 
       else
       {
-        Calc.Model.substr = textRow.value.substr(textRow.value.lastIndexOf(Calc.Model.op),textRow.value.length);
-        textRow.value = eval(textRow.value);
-        Calc.Model.isEval = 1;
+        if(Calc.Model.op != "")
+        {
+          Calc.Model.substr = textRow.value.substr(textRow.value.lastIndexOf(Calc.Model.op),textRow.value.length);
+          textRow.value = eval(textRow.value);
+          Calc.Model.isEval = 1;
+        }
       }
     }
   },
@@ -144,7 +146,7 @@ displayElement : function (element) {
 
 display : function() {
   var s;
-  s = "<table id=\"myTable\" border=1>"
+  s = "<table id=\"myTable\" border=1>";
   s += "<tr>" + Calc.displayElement(Calc.View.textRow) + "</tr>";
   s += "<tr>";
   s += "<td>" + Calc.displayElement(Calc.View.button7) + "</td>";
