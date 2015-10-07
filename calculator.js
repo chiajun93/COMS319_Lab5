@@ -12,6 +12,8 @@ var Calc = {
     op: "",
     display : 1,
     substr: "",
+    isDot: 0,
+    reset: 0,
     isEval: 0
   },
 
@@ -37,6 +39,7 @@ var Calc = {
     buttonMR : {id: "buttonMR", type: "button", value: "MR", onclick:""},
     buttonMMinus : {id: "buttonMMinus", type: "button", value: "M-", onclick:""},
     buttonMPlus : {id: "buttonMPlus", type: "button", value: "M+", onclick:""},
+    buttonMClear : {id: "buttonMClear", type: "button", value: "MC", onclick:""},
     buttonPlus : {id: "buttonPlus", type: "button", value: "+", onclick:""}
   },
 
@@ -56,6 +59,7 @@ var Calc = {
       else if(currVal == "M-"){
         if(textRow.value != ""){
           Calc.Model.memory = eval(Calc.Model.memory + "-(" + textRow.value +")");
+          Calc.Model.isDot = 0;
         }
 
         Calc.Model.display = 0;
@@ -64,16 +68,28 @@ var Calc = {
       else if(currVal == "MR"){
         textRow.value = Calc.Model.memory;
         Calc.Model.display = 0;
+        if(textRow.value.indexOf(".") > -1){
+          Calc.Model.isDot = 1;
+        }
+      }
+
+      else if(currVal == "MC"){
+        Calc.Model.memory = 0;
+        Calc.Model.display = 0;
+        Calc.Model.isDot = 0;
       }
 
       else if(currVal == "C"){
         textRow.value = "";
         Calc.Model.display = 0;
+        Calc.Model.isDot = 0;
+        Calc.Model.op = "";
       }
 
       else if(currVal == "."){
-        if(textRow.value.indexOf(".") == -1){
+        if(Calc.Model.isDot == 0){
           textRow.value += currVal;
+          Calc.Model.isDot = 1;
         }
         Calc.Model.display = 0;
       }
@@ -81,22 +97,27 @@ var Calc = {
       else{
         if(currVal == "+"){
           Calc.Model.op = "+";
+          Calc.Model.isDot = 0;
         }
         else if(currVal == "-"){
           Calc.Model.op = "-";
+          Calc.Model.isDot = 0;
         }
         else if(currVal == "*"){
           Calc.Model.op = "*";
+          Calc.Model.isDot = 0;
         }
         else if(currVal == "/"){
           Calc.Model.op = "/";
+          Calc.Model.isDot = 0;
         }
+        
         Calc.Model.display = 1;
       }
 
       if(Calc.Model.display == 1)
       {
-        if(textRow.value == 0){
+        if(textRow.value === 0){
           textRow.value = currVal;
         }
 
@@ -116,13 +137,17 @@ var Calc = {
 
       else
       {
-        if(Calc.Model.op != "")
+        if(Calc.Model.op != "" && textRow.value != "")
         {
           Calc.Model.substr = textRow.value.substr(textRow.value.lastIndexOf(Calc.Model.op),textRow.value.length);
           textRow.value = eval(textRow.value);
           Calc.Model.isEval = 1;
           Calc.Model.op = "";
         }
+      }
+
+      if(textRow.value.indexOf(".") > -1){
+        Calc.Model.isDot = 1;
       }
     }
   },
@@ -146,7 +171,7 @@ displayElement : function (element) {
 
 display : function() {
   var s;
-  s = "<table id=\"myTable\" border=1>";
+  s = "<table id=\"myTable\" border=0>";
   s += "<tr>" + Calc.displayElement(Calc.View.textRow) + "</tr>";
   s += "<tr>";
   s += "<td>" + Calc.displayElement(Calc.View.button7) + "</td>";
@@ -181,6 +206,7 @@ display : function() {
   s += "<td>" + Calc.displayElement(Calc.View.buttonMR) + "</td>";
   s += "<td>" + Calc.displayElement(Calc.View.buttonMMinus) + "</td>";
   s += "<td>" + Calc.displayElement(Calc.View.buttonMPlus) + "</td>";
+  s += "<td>" + Calc.displayElement(Calc.View.buttonMClear) + "</td>";
   s += "</tr>";
   s += "</table>";
   return s;
@@ -201,6 +227,7 @@ attachHandlers : function() {
  Calc.View.buttonMR.onclick = "Calc.Controller.buttonsHandler(this.value)";  
  Calc.View.buttonClear.onclick = "Calc.Controller.buttonsHandler(this.value)";
  Calc.View.buttonDot.onclick = "Calc.Controller.buttonsHandler(this.value)";  
+ Calc.View.buttonMClear.onclick = "Calc.Controller.buttonsHandler(this.value)";  
 },
 
 
