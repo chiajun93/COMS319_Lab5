@@ -8,10 +8,9 @@
 var Calc = {
 
   Model : {
-    preVal : 0,
-    total: 0,
+    memory : 0,
     op: "",
-    display : false
+    display : 1
   },
 
 
@@ -33,7 +32,7 @@ var Calc = {
     buttonDiv : {id: "buttonDiv", type: "button", value: "/", onclick:""},
     buttonEqual : {id: "buttonEqual", type: "button", value: "=", onclick:""},
     buttonClear : {id: "buttonClear", type: "button", value: "C", onclick:""},
-    buttonMClear : {id: "buttonMClear", type: "button", value: "MC", onclick:""},
+    buttonMR : {id: "buttonMR", type: "button", value: "MR", onclick:""},
     buttonMMinus : {id: "buttonMMinus", type: "button", value: "M-", onclick:""},
     buttonMPlus : {id: "buttonMPlus", type: "button", value: "M+", onclick:""},
     buttonPlus : {id: "buttonPlus", type: "button", value: "+", onclick:""}
@@ -41,32 +40,58 @@ var Calc = {
 
   Controller : {
     buttonsHandler : function(currVal) {
+        
+        if(currVal == "M+"){
+          if(textRow.value != ""){
+            Calc.Model.memory = eval(Calc.Model.memory + "+" + textRow.value);
+          }
 
-     
-        textRow.value += currVal;
-      
+          Calc.Model.display = 0;
+        }
+
+        else if(currVal == "M-"){
+          if(textRow.value != ""){
+            Calc.Model.memory = eval(Calc.Model.memory + "-" + textRow.value);
+          }
+
+          Calc.Model.display = 0;
+        }
+
+        else if(currVal == "MR"){
+          textRow.value = Calc.Model.memory;
+          console.log(Calc.Model.memory);
+          Calc.Model.display = 0;
+        }
+
+        else if(currVal == "C"){
+          textRow.value = "";
+          Calc.Model.display = 0;
+        }
+
+        else if(currVal == "."){
+          if(textRow.value.indexOf(".") == -1){
+            textRow.value += currVal;
+          }
+          Calc.Model.display = 0;
+        }
+
+        else{
+          Calc.Model.display = 1;
+        }
+
+        if(Calc.Model.display == 1)
+        {
+          textRow.value += currVal;
+        }
 
     },
 
-    opsHandler: function(op){
-      if(op === "+"){
-        Calc.Model.total += preVal;
-      }
+    eval: function(){
 
-      else if(op === "-"){
-        Calc.Controller.op = "-";
-
-      }
-
-      else if(op === "*"){
-        Calc.Controller.op = "*";
-
-      }
-
-      else if(op === "/"){
-        Calc.Controller.op = "/";
-
-      }
+      var sum = eval(textRow.value);
+      textRow.value = sum;
+      Calc.Model.total = sum;
+      console.log(Calc.Model.total);
     }
   },
 
@@ -90,35 +115,43 @@ displayElement : function (element) {
 
 display : function() {
   var s;
-  s = "<table id=\"myTable\" border=4>"
-  s += "<tr><td>" + Calc.displayElement(Calc.View.textRow) + "</td></tr>";
-  s += "<tr><td>";
-  s += Calc.displayElement(Calc.View.button7) + "\t";
-  s += Calc.displayElement(Calc.View.button8) + "\t";
-  s += Calc.displayElement(Calc.View.button9) + "\t";
-  s += Calc.displayElement(Calc.View.buttonPlus);
-  s += "<br>";
-  s += Calc.displayElement(Calc.View.button4) + "\t";
-  s += Calc.displayElement(Calc.View.button5) + "\t";
-  s += Calc.displayElement(Calc.View.button6) + "\t";
-  s += Calc.displayElement(Calc.View.buttonMinus) + "\t";
-  s += "<br>";
-  s += Calc.displayElement(Calc.View.button1) + "\t";
-  s += Calc.displayElement(Calc.View.button2) + "\t";
-  s += Calc.displayElement(Calc.View.button3) + "\t";
-  s += Calc.displayElement(Calc.View.buttonTimes) + "\t";
-  s += "<br>";
-  s += Calc.displayElement(Calc.View.button0) + "\t";
-  s += Calc.displayElement(Calc.View.buttonDot) + "\t";
-  s += Calc.displayElement(Calc.View.buttonEqual) + "\t";
-  s += Calc.displayElement(Calc.View.buttonDiv) + "\t";
-  s += "<br>";
-  s += Calc.displayElement(Calc.View.buttonClear) + "\t";
-  s += Calc.displayElement(Calc.View.buttonMClear) + "\t";
-  s += Calc.displayElement(Calc.View.buttonMMinus) + "\t";
-  s += Calc.displayElement(Calc.View.buttonMPlus) + "\t";
-  
-  s += "</tr></td></table>";
+  s = "<table id=\"myTable\" border=1>"
+  s += "<tr>" + Calc.displayElement(Calc.View.textRow) + "</tr>";
+  s += "<tr>";
+  s += "<td>" + Calc.displayElement(Calc.View.button7) + "</td>";
+  s += "<td>" + Calc.displayElement(Calc.View.button8) + "</td>";
+  s += "<td>" +Calc.displayElement(Calc.View.button9) + "</td>";
+  s += "<td>" + Calc.displayElement(Calc.View.buttonPlus) + "</td>";
+   s += "</tr>";
+   
+   s += "<tr>";
+  s += "<td>" + Calc.displayElement(Calc.View.button4) + "</td>";
+  s += "<td>" + Calc.displayElement(Calc.View.button5) + "</td>";
+  s += "<td>" + Calc.displayElement(Calc.View.button6) + "</td>";
+  s += "<td>" + Calc.displayElement(Calc.View.buttonMinus) + "</td>";
+   s += "</tr>";
+
+   s += "<tr>";
+  s += "<td>" + Calc.displayElement(Calc.View.button1) + "</td>";
+  s += "<td>" + Calc.displayElement(Calc.View.button2) + "</td>";
+  s += "<td>" + Calc.displayElement(Calc.View.button3) + "</td>";
+  s += "<td>" + Calc.displayElement(Calc.View.buttonTimes) + "</td>";
+  s += "</tr>";
+
+  s += "<tr>";
+  s += "<td>" + Calc.displayElement(Calc.View.button0) + "</td>";
+  s += "<td>" + Calc.displayElement(Calc.View.buttonDot) + "</td>";
+  s += "<td>" + Calc.displayElement(Calc.View.buttonEqual) + "</td>";
+  s += "<td>" + Calc.displayElement(Calc.View.buttonDiv) + "</td>";
+  s += "</tr>";
+
+  s += "<tr>";
+  s += "<td>" + Calc.displayElement(Calc.View.buttonClear) + "</td>";
+  s += "<td>" + Calc.displayElement(Calc.View.buttonMR) + "</td>";
+  s += "<td>" + Calc.displayElement(Calc.View.buttonMMinus) + "</td>";
+  s += "<td>" + Calc.displayElement(Calc.View.buttonMPlus) + "</td>";
+  s += "</tr>";
+  s += "</table>";
   return s;
 },
 
@@ -131,6 +164,12 @@ attachHandlers : function() {
  Calc.View.buttonMinus.onclick = "Calc.Controller.buttonsHandler(this.value)";
  Calc.View.buttonTimes.onclick = "Calc.Controller.buttonsHandler(this.value)";
  Calc.View.buttonDiv.onclick = "Calc.Controller.buttonsHandler(this.value)";  
+ Calc.View.buttonEqual.onclick = "Calc.Controller.eval()";
+ Calc.View.buttonMPlus.onclick = "Calc.Controller.buttonsHandler(this.value)";
+ Calc.View.buttonMMinus.onclick = "Calc.Controller.buttonsHandler(this.value)";
+ Calc.View.buttonMR.onclick = "Calc.Controller.buttonsHandler(this.value)";  
+ Calc.View.buttonClear.onclick = "Calc.Controller.buttonsHandler(this.value)";
+ Calc.View.buttonDot.onclick = "Calc.Controller.buttonsHandler(this.value)";  
 },
 
 
