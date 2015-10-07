@@ -121,6 +121,7 @@ var Calc = {
           Calc.Model.substr = textRow.value.substr(textRow.value.lastIndexOf(Calc.Model.op),textRow.value.length);
           textRow.value = eval(textRow.value);
           Calc.Model.isEval = 1;
+          Calc.Model.op = "";
         }
       }
     }
@@ -128,7 +129,6 @@ var Calc = {
 
   run : function() {
     Calc.attachHandlers();
-  // console.log(Calc.display());
   return Calc.display();
 },
 
